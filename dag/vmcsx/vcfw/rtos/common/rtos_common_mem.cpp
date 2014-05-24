@@ -318,7 +318,7 @@ int mem_init(void *mempool_base, uint32_t mempool_size, void *mempool_handles_ba
 	mem_allocator1 = GhwMemAllocator::create(GhwMemAllocator::GHW_MEM_ALLOC_RETAIN_NONE, 1*1024*1024, 4);
 			
 	if (mem_allocator == NULL) {
-		LOGE("GhwMemAllocator::create failed \n");
+		ALOGE("GhwMemAllocator::create failed \n");
 		return 0;
 	}
 

@@ -101,7 +101,7 @@ int khrn_cache_lookup(KHRN_CACHE_T *cache, const void *data, int len, int sig, b
 			handle = (MEM_HANDLE_T)khrn_map_lookup(&cache->map, key);
 			if(!((handle == MEM_HANDLE_INVALID) || (handle == (MEM_HANDLE_T)(-1))))
 				{
-//				LOGE("hash key had a valid handle .. what to do?");
+//				ALOGE("hash key had a valid handle .. what to do?");
 				}
 			else
 				{

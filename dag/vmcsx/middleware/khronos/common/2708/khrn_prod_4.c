@@ -634,7 +634,7 @@ bool khrn_hw_init(void)
 #ifdef BRCM_V3D_OPT
 	fd_v3d = open("/dev/v3d", O_RDONLY);
 	if(fd_v3d < 0) {
-		LOGE("Could not open v3d device from khrn_prod_4");
+		ALOGE("Could not open v3d device from khrn_prod_4");
 		return false;
 	}
 	g_bin_mems_head =  mem_alloc_ex(BIN_MEM_SIZE, KHRN_HW_BIN_MEM_ALIGN, (MEM_FLAG_T)(MEM_FLAG_DIRECT | MEM_FLAG_NO_INIT | MEM_FLAG_RETAINED), "khrn_hw_bin_mem (too cool for pool)", MEM_COMPACT_NONE);
@@ -748,7 +748,7 @@ static int dbg_list_get_slot (v3d_job_post_t *p_job_post)
 	size = (p_job_post->v3d_ct0ea - p_job_post->v3d_ct0ca);
 	size += (p_job_post->v3d_ct1ea - p_job_post->v3d_ct1ca);
 	if (size > DBG_MAX_LIST_SIZE) {
-		LOGE("Skipping storing the CL for job[%d] size[%d]", p_job_post->job_id, size);
+		ALOGE("Skipping storing the CL for job[%d] size[%d]", p_job_post->job_id, size);
 		return -1;
 	}
 
@@ -798,7 +798,7 @@ static int dbg_list_dump_all (void)
 	snprintf(fname,64,"/data/dbg_dump/dbg_list_%d.cl",dbg_file_idx);
 	dbg_fd = open(fname, (O_CREAT | O_WRONLY), 0666);
 	if (dbg_fd < 0) {
-		LOGE( "[%d]Failed to create [%s]", dbg_fd, fname);
+		ALOGE( "[%d]Failed to create [%s]", dbg_fd, fname);
 		return -1;
 	}
 #endif
@@ -810,11 +810,11 @@ static int dbg_list_dump_all (void)
 		if (dbg_list_hdr[idx].valid) {
 			if (dbg_list_hdr[idx].job_post.job_id > dbg_last_job_written) {
 #if 0
-				LOGD("i[%d] idx[%d] v[%d]: id[%d] b[%d] bs[%d] r[%d] rs[%d]",
+				ALOGD("i[%d] idx[%d] v[%d]: id[%d] b[%d] bs[%d] r[%d] rs[%d]",
 					i, idx, dbg_list_hdr[idx].valid, dbg_list_hdr[idx].job_post.job_id,
 					dbg_list_hdr[idx].bin_start, dbg_list_hdr[idx].bin_size,
 					dbg_list_hdr[idx].rend_start, dbg_list_hdr[idx].rend_size);
-				LOGD("[%p] [%p] [%p] [%p]",
+				ALOGD("[%p] [%p] [%p] [%p]",
 					dbg_list_hdr[idx].job_post.v3d_ct0ca, dbg_list_hdr[idx].job_post.v3d_ct0ea,
 					dbg_list_hdr[idx].job_post.v3d_ct1ca, dbg_list_hdr[idx].job_post.v3d_ct1ea);
 #endif
@@ -823,12 +823,12 @@ static int dbg_list_dump_all (void)
 					addr = &dbg_list_hdr[idx];
 					wr_sz = sizeof(dbg_list_hdr_t);
 					n = write(dbg_fd, addr, wr_sz);
-					LOGE_IF((wr_sz != n), "Failed to write [%d]bytes hdr from [0x%08x] to [%s]", wr_sz, addr, fname);
+					ALOGE_IF((wr_sz != n), "Failed to write [%d]bytes hdr from [0x%08x] to [%s]", wr_sz, addr, fname);
 
 					addr = &dbg_data[dbg_list_hdr[idx].bin_start];
 					wr_sz = dbg_list_hdr[idx].bin_size + dbg_list_hdr[idx].rend_size;
 					n = write(dbg_fd, addr, wr_sz);
-					LOGE_IF((wr_sz != n), "Failed to write [%d]bytes data from [0x%08x] to [%s]", wr_sz, addr, fname);
+					ALOGE_IF((wr_sz != n), "Failed to write [%d]bytes data from [0x%08x] to [%s]", wr_sz, addr, fname);
 				}
 #endif
 
@@ -847,7 +847,7 @@ static int dbg_list_dump_all (void)
 		close(dbg_fd);
 	}
 	if (l_job_id != -1) {
-		LOGD("Dump [%d]jobs from job id[%d] to file[%s]", cnt, l_job_id, fname);
+		ALOGD("Dump [%d]jobs from job id[%d] to file[%s]", cnt, l_job_id, fname);
 	}
 	dbg_file_idx++;
 #endif
@@ -937,7 +937,7 @@ void *khrn_hw_queue(
    prepare_bin(&item->post);
 	   if(cacheops('F',0x0,0x0,0x20000)<0)
 	   {
-		   LOGE("Error in flushing cache\n");
+		   ALOGE("Error in flushing cache\n");
 		   return NULL;
 	   }
 
@@ -974,18 +974,18 @@ void *khrn_hw_queue(
 	}
 #endif
 #if 0
-	 LOGE("Job Post id[%d] tid[%d] CT[0x%08x 0x%08x 0x%08x 0x%08x] ",
+	 ALOGE("Job Post id[%d] tid[%d] CT[0x%08x 0x%08x 0x%08x 0x%08x] ",
 		job_post.job_id, gettid(), khrn_hw_addr(bin_begin),khrn_hw_addr(bin_end),
 		khrn_hw_addr(render_begin),khrn_hw_addr(render_end));
 #endif
    if (ioctl(fd_v3d, V3D_IOCTL_POST_JOB, &job_post) < 0) {
-	   LOGE("ioctl [0x%x] failed \n", V3D_IOCTL_POST_JOB);
+	   ALOGE("ioctl [0x%x] failed \n", V3D_IOCTL_POST_JOB);
    }
 #if 0
    if (ioctl(fd_v3d, V3D_IOCTL_WAIT_JOB, &job_status) < 0) {
-		  LOGE("ioctl [0x%x] failed \n", V3D_IOCTL_WAIT_JOB);
+		  ALOGE("ioctl [0x%x] failed \n", V3D_IOCTL_WAIT_JOB);
 	  }
-   LOGE_IF((job_status.job_status != V3D_JOB_STATUS_SUCCESS), "job id[%d] status[%d] \n", job_status.job_id, job_status.job_status);
+   ALOGE_IF((job_status.job_status != V3D_JOB_STATUS_SUCCESS), "job id[%d] status[%d] \n", job_status.job_id, job_status.job_status);
 #endif
 
    pthread_mutex_unlock(&khrn_hw_queue_mutex);
@@ -1155,11 +1155,11 @@ void khrn_hw_queue_display(EGL_DISP_SLOT_HANDLE_T slot_handle)
 #ifdef BRCM_V3D_OPT
 void khrn_hw_wait(void)
 {
-//	LOGE("entered waiting for job finish");
+//	ALOGE("entered waiting for job finish");
 	pthread_mutex_lock(&khrn_hw_queue_mutex);
 	if(msg_list_android == NULL)
 	 {
-//	 	LOGE("returning from job finish 1");
+//	 	ALOGE("returning from job finish 1");
 		pthread_mutex_unlock(&khrn_hw_queue_mutex);
 		return;
 	 }
@@ -1181,15 +1181,15 @@ void khrn_hw_wait(void)
 	job_status.job_id = 14;
 //	job_status.job_status = 0;
 
-//LOGE("waiting for job finish");
+//ALOGE("waiting for job finish");
 	if (ioctl(fd_v3d, V3D_IOCTL_WAIT_JOB, &job_status) < 0) {
-		   LOGE("ioctl [0x%x] failed \n", V3D_IOCTL_WAIT_JOB);
+		   ALOGE("ioctl [0x%x] failed \n", V3D_IOCTL_WAIT_JOB);
 	   }
-//	LOGE("wait completed for job finish");
+//	ALOGE("wait completed for job finish");
 	pthread_mutex_lock(&khrn_hw_queue_mutex);
 	if(msg_list_android == NULL)
 	 {
-	 LOGE("Said waiting ... but, nothing in list???");
+	 ALOGE("Said waiting ... but, nothing in list???");
 		pthread_mutex_unlock(&khrn_hw_queue_mutex);
 		return;
 	 }
@@ -1213,7 +1213,7 @@ void khrn_hw_wait(void)
 		temp = msg_list_android ;
 		}while(temp != NULL);
 	 }
-//	LOGE("cleanup completed for job finish");
+//	ALOGE("cleanup completed for job finish");
 	pthread_mutex_unlock(&khrn_hw_queue_mutex);
 
 	return;
@@ -1324,7 +1324,7 @@ static void khrn_hw_isr(uint32_t flags)
    }
    else
    {
-	   LOGV("APP V3D used for %d",ucount);
+	   ALOGV("APP V3D used for %d",ucount);
 	   ucount = 0;
 	   logtime = t1.tv_sec;
    }
@@ -1603,10 +1603,10 @@ static void prepare_bin(MSG_T* bin_prepared)
         if (0){//bin_prepared->bin_mems_head == MEM_INVALID_HANDLE) {
                if (bin_mems_n != 0) {
                   /* wait for one to be freed (this makes sense even for the separate allocation mode as we can discard bin mems)... */
-			  LOGE("Returning without prepare in prepare_bin");
+			  ALOGE("Returning without prepare in prepare_bin");
               return;
                }
-		   LOGE("Returning without prepare in prepare_bin 1");
+		   ALOGE("Returning without prepare in prepare_bin 1");
            bin_prepared->ok = false;
            bin_prepared->ok_prepare = false;
             } else {
@@ -1621,7 +1621,7 @@ static void prepare_bin(MSG_T* bin_prepared)
                specials[3] = bin_mem_size;
            bin_begin = bin_prepared->bin_begin;
            bin_end = bin_prepared->bin_end;
-		   //LOGE("specials %x %x %x %x %x",specials[0],specials[1],specials[2],specials[3],gettid());
+		   //ALOGE("specials %x %x %x %x %x",specials[0],specials[1],specials[2],specials[3],gettid());
                fixup_done = false;
            bin_prepared->callback(KHRN_HW_CALLBACK_REASON_FIXUP, bin_prepared->callback_data, specials);
                khrn_hw_flush_dcache(); /* todo: flush only what needs to be flushed (stuff in fixup callback might be assuming this flush too!) */
@@ -1793,7 +1793,7 @@ static void submit_bin(bool *notify_master, bool *notify_worker)
 			{
 				if(cacheops('F',0x0,0x0,0x20000)<0)
 				{
-					LOGE("Error in flushing cache\n");
+					ALOGE("Error in flushing cache\n");
 					return;
 				}
 			}
@@ -1884,7 +1884,7 @@ static void submit_render(bool *notify_master, bool *notify_worker)
 		 {
 		 	if(cacheops('F',0x0,0x0,0x20000)<0)
 			{
-				LOGE("Error in flushing cache\n");
+				ALOGE("Error in flushing cache\n");
 				return;
 			}
 		 }
@@ -1902,7 +1902,7 @@ static void submit_render(bool *notify_master, bool *notify_worker)
 		job_status.job_id = 15;
 		job_status.job_status = V3D_JOB_STATUS_INVALID;
 		if (ioctl(fd_v3d, V3D_IOCTL_POST_JOB, &job_post) < 0) {
-			LOGE("ioctl [0x%x] failed \n", V3D_IOCTL_POST_JOB);
+			ALOGE("ioctl [0x%x] failed \n", V3D_IOCTL_POST_JOB);
 		}
   		khrn_hw_isr(1);
 #else

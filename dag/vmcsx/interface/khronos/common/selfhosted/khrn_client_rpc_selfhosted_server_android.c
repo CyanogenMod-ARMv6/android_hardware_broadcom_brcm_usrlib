@@ -191,7 +191,7 @@ void vc_vchi_khronos_init(VCHI_INSTANCE_T initialise_instance,
       os_thread_start(&ipc_vchi_server_thread, ipc_vchi_server, &started, STACK, "ipc_vchi_server");
       os_event_wait(&started);
       os_event_destroy(&started);
-      LOGI("ipc_vchi_server started\n");
+      ALOGI("ipc_vchi_server started\n");
    }
 
    vcos_assert(num_connections == 1);

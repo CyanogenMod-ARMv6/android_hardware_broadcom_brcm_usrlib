@@ -13,8 +13,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include "interface/khronos/include/EGL/eglext.h"
 #include "helpers/vc_image/vc_image.h"
 #include <assert.h>
-#include <ui/android_native_buffer.h>
-#include <ui/egl/android_natives.h>
+//#include <ui/android_native_buffer.h>
+//#include <ui/egl/android_natives.h>
 #include <cutils/log.h>
 
 static bool displaying = false;
@@ -183,9 +183,9 @@ void egl_server_platform_display(
 		nativeWindow = get_android_native_window();
 
 	if (nativeWindow) {
-		nativeWindow->dequeueBuffer(nativeWindow, &buffer);
+		nativeWindow->dequeueBuffer(nativeWindow, &buffer, -1);
 		// comment out the line below when software OpenGL is used for SurfaceFlinger 
-		nativeWindow->lockBuffer(nativeWindow, buffer);
+		//nativeWindow->lockBuffer(nativeWindow, buffer);
 
 		module->lock(module, buffer->handle,
 			GRALLOC_USAGE_SW_WRITE_OFTEN,
@@ -203,7 +203,7 @@ void egl_server_platform_display(
 		}
 
 		module->unlock(module, buffer->handle);
-		nativeWindow->queueBuffer(nativeWindow, buffer);
+		nativeWindow->queueBuffer(nativeWindow, buffer, -1);
 	}
 	}
 

@@ -10,8 +10,9 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #ifndef BRCM_EGL_H
 #define BRCM_EGL_H
 
-#include <ui/egl/android_natives.h>
-#include <ui/android_native_buffer.h>
+//#include <ui/egl/android_natives.h>
+//#include <ui/android_native_buffer.h>
+#include "window.h"
 
 #ifdef __cplusplus
 extern "C" {

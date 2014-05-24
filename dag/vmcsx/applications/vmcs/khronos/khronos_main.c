@@ -102,7 +102,7 @@ void khronos_init()
 	v3d_get_func_table()->init();
 #else
 	if (os_init())
-		LOGE("khronos_init: os_init() failed\n");
+		ALOGE("khronos_init: os_init() failed\n");
 
 	v3d_get_func_table()->init();
 

@@ -45,6 +45,7 @@ LOCAL_C_INCLUDES += $(VMCSX_DIR)/middleware/khronos/vg/2708/platform
 LOCAL_C_INCLUDES += $(VMCSX_DIR)/vcfw/drivers/chip
 LOCAL_C_INCLUDES += $(VMCSX_DIR)/vcinclude
 LOCAL_C_INCLUDES += $(VMCSX_DIR)/vcinclude/dummy
+LOCAL_C_INCLUDES += system/core/include/system
 
 
 

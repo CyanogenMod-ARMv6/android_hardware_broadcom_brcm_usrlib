@@ -58,16 +58,16 @@ static void compile(ShaderFlavour flavour, int sourcec, const char** sourcev)
    strcpy(error_buffer, "");
 	if(flavour == SHADER_FRAGMENT) {
 		int i;
-		LOGV("fragment shader ++");
+		ALOGV("fragment shader ++");
 		for( i=0;i<sourcec; i++) {
 			char* buf = sourcev[i];
 			while(buf = strstr(buf,"samplerExternalOES")) {
-				LOGV("found(%d) string %s",i,buf);
+				ALOGV("found(%d) string %s",i,buf);
 				memcpy(buf,"sampler2D         ",18);
-				LOGV("replace(%d) string %s",i,buf);
+				ALOGV("replace(%d) string %s",i,buf);
 				}
 			}
-		LOGV("fragment shader --");
+		ALOGV("fragment shader --");
 		}
 
 	// Parse input.

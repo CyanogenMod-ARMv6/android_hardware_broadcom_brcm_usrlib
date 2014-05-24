@@ -378,7 +378,7 @@ bool glxx_hw_clear(bool color, bool depth, bool stencil, GLXX_SERVER_STATE_T *st
 
    //moved install frame buffer until after the check
 #ifdef DEBUG_CL_CREATE
-   LOGD("glxx_hw_clear: state[%p]", state);
+   ALOGD("glxx_hw_clear: state[%p]", state);
 #endif
 
    depth &= state->depth_mask;
@@ -544,8 +544,8 @@ bool glxx_hw_start_frame_internal(GLXX_HW_RENDER_STATE_T *rs, GLXX_HW_FRAMEBUFFE
 
    vcos_assert(render_state == NULL);
 #ifdef DEBUG_CL_CREATE
-   LOGD("glxx_hw_start_frame_internal: fb[%p] rs[%p] render_state[%p]", fb, rs, render_state);
-   LOGD("glxx_hw_start_frame_internal: fb_w[%d] fb_h[%d]", fb->pad_width, fb->pad_height);
+   ALOGD("glxx_hw_start_frame_internal: fb[%p] rs[%p] render_state[%p]", fb, rs, render_state);
+   ALOGD("glxx_hw_start_frame_internal: fb_w[%d] fb_h[%d]", fb->pad_width, fb->pad_height);
 #endif
 
    rs->xxx_empty = false;
@@ -557,7 +557,7 @@ bool glxx_hw_start_frame_internal(GLXX_HW_RENDER_STATE_T *rs, GLXX_HW_FRAMEBUFFE
 
 #ifdef DEBUG_CL_CREATE
    if ((fb->pad_width != color->width) || (fb->pad_height != color->height) ) {
-      LOGE("Error in glxx_hw_start_frame_internal: pad_w[%d] pad_h[%d] col_w[%d] col_h[%d]",
+      ALOGE("Error in glxx_hw_start_frame_internal: pad_w[%d] pad_h[%d] col_w[%d] col_h[%d]",
          fb->pad_width, fb->pad_height,  color->width, color->height);
    }
 #endif
@@ -625,7 +625,7 @@ bool glxx_hw_start_frame_internal(GLXX_HW_RENDER_STATE_T *rs, GLXX_HW_FRAMEBUFFE
 quit:
    glxx_unlock_fixer_stuff();
 quit2:
-   LOGE("quit2: glxx_hw_start_frame_internal");
+   ALOGE("quit2: glxx_hw_start_frame_internal");
    color = (KHRN_IMAGE_T *)mem_lock(fb->mh_color_image);
    khrn_interlock_release(&color->interlock, khrn_interlock_user(rs->name));
    mem_unlock(fb->mh_color_image);
@@ -651,13 +651,13 @@ static bool create_master_cl(void)
 
    col = (KHRN_IMAGE_T *)mem_lock(render_state->installed_fb.mh_color_image);
 #ifdef DEBUG_CL_CREATE
-   LOGD("create_master_cl: pad_w[%d] pad_h[%d] col_w[%d] col_h[%d]",
+   ALOGD("create_master_cl: pad_w[%d] pad_h[%d] col_w[%d] col_h[%d]",
       render_state->installed_fb.pad_width, render_state->installed_fb.pad_height,
       col->width, col->height);
 #endif
    if ((render_state->installed_fb.width != col->width) ||
     (render_state->installed_fb.height != col->height) ) {
-      LOGE("skip creating render list");
+      ALOGE("skip creating render list");
       mem_unlock(render_state->installed_fb.mh_color_image);
       goto fail;
    }
@@ -824,7 +824,7 @@ static bool create_bin_cl(void)
 
    return true;
 fail:
-   LOGE("fail: create_bin_cl");
+   ALOGE("fail: create_bin_cl");
    glxx_unlock_fixer_stuff();
    return false;
 }
@@ -995,8 +995,8 @@ bool glxx_hw_render_state_flush(GLXX_HW_RENDER_STATE_T *rs)
 
    vcos_assert(!rs->xxx_empty);
 #ifdef DEBUG_CL_CREATE
-   LOGD("glxx_hw_render_state_flush: rs[%p] render_state[%p]", rs, render_state);
-   LOGD("glxx_hw_render_state_flush: fb_w[%d] fb_h[%d]", rs->installed_fb.pad_width, rs->installed_fb.pad_height);
+   ALOGD("glxx_hw_render_state_flush: rs[%p] render_state[%p]", rs, render_state);
+   ALOGD("glxx_hw_render_state_flush: fb_w[%d] fb_h[%d]", rs->installed_fb.pad_width, rs->installed_fb.pad_height);
 #endif
 
 #ifdef DRAW_TEX_LOGGING

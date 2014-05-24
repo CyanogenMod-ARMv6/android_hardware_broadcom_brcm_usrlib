@@ -385,7 +385,7 @@ unsigned int  khrn_hw_addr(const void *addr)
 			}while(head != NULL);
 		}
 	vcos_quickslow_mutex_unlock(&g_mgr.mutex);
-	LOGE("Unable to Find Phys Addr for %x",addr);
+	ALOGE("Unable to Find Phys Addr for %x",addr);
 //	char* temp = NULL;
 //	*temp = 0;
 //	return (unsigned int)((unsigned int)(addr - memory_pool_base) + memory_pool_addr);
@@ -432,7 +432,7 @@ void *khrn_hw_unaddr(uint32_t addr)
 			}while(head != NULL);
 		}
 	vcos_quickslow_mutex_unlock(&g_mgr.mutex);
-	LOGE("Unable to Find Virt Addr for %x",addr);
+	ALOGE("Unable to Find Virt Addr for %x",addr);
 //	return (void *)((unsigned int)(addr - memory_pool_addr) + memory_pool_base);
 	return NULL;
 }
@@ -2238,7 +2238,7 @@ int mem_init(void *mempool_base, uint32_t mempool_size, void *mempool_handles_ba
 	int ret;
 	fd_gemem = open("/dev/gememalloc",O_RDWR);
 	if (fd_gemem < 0) {
-	   LOGE("RTOS COMMON MEM mem_init failed to open /dev/gememalloc device fd[%d]", fd_gemem);
+	   ALOGE("RTOS COMMON MEM mem_init failed to open /dev/gememalloc device fd[%d]", fd_gemem);
 	   return 0;
 	}
 	int tempSize = GLOBAL_POOL_SIZE;
@@ -2249,14 +2249,14 @@ int mem_init(void *mempool_base, uint32_t mempool_size, void *mempool_handles_ba
 	ret = ioctl(fd_gemem, GEMEMALLOC_WRAP_ACQUIRE_BUFFER, &params);
 	if((params.busAddress == 0) || (ret != 0))
 	{
-		LOGE("RTOS COMMON MEM zero linear buffer allocated sz[%d] addr[%x] fd[%d] ret[%d]\n",
+		ALOGE("RTOS COMMON MEM zero linear buffer allocated sz[%d] addr[%x] fd[%d] ret[%d]\n",
 			tempSize, params.busAddress, fd_gemem, ret);
 		return 0;
 	}
 	memory_pool_addr = params.busAddress;
 	memory_pool_base = (void*)mmap(0, tempSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd_gemem, memory_pool_addr);
 	if (memory_pool_base == MAP_FAILED) {
-		LOGE("RTOS COMMON MEM map failed sz[%d] addr[%x] virt[%x] fd[%d] ret[%d]\n",
+		ALOGE("RTOS COMMON MEM map failed sz[%d] addr[%x] virt[%x] fd[%d] ret[%d]\n",
 			tempSize, params.busAddress, memory_pool_base, fd_gemem, ret);
 	   return 0;
 	}
@@ -2598,7 +2598,7 @@ static MEM_HANDLE_T mem_alloc_ex_no_mutex(
 			handle = MEM_HANDLE_INVALID;
 
 			MEM_SET_SANDBOX_REGIONS();
-			LOGE("RTOS COMMON MEM allocation failed from global pool for %d bytes.. space left is %d bytes",size,mem_get_free_space_unlocked());
+			ALOGE("RTOS COMMON MEM allocation failed from global pool for %d bytes.. space left is %d bytes",size,mem_get_free_space_unlocked());
 			
 #ifdef ASSERT_ON_ALLOC_FAIL
 			assert(0);
@@ -2639,7 +2639,7 @@ static MEM_HANDLE_T mem_alloc_ex_no_mutex(
 					ioctl(fd_gemem, GEMEMALLOC_WRAP_ACQUIRE_BUFFER, &params);
 					if(params.busAddress == 0)
 					{
-						LOGE("RTOS COMMON MEM zero linear buffer allocated %d %x %x\n",tempSize,params.busAddress,flags);
+						ALOGE("RTOS COMMON MEM zero linear buffer allocated %d %x %x\n",tempSize,params.busAddress,flags);
 						break;
 					}
 
@@ -2671,7 +2671,7 @@ static MEM_HANDLE_T mem_alloc_ex_no_mutex(
 		}
 		else
 			{
-			LOGE("BIG MEM OUT OF HANDLES");
+			ALOGE("BIG MEM OUT OF HANDLES");
 			}
 	}
 
@@ -3630,7 +3630,7 @@ int mem_resize_ex(
 
 			if(params.busAddress == 0)
 			{
-				LOGE("RTOS COMMON MEM RESIZE zero linear buffer allocated %d %x\n",tempSize,params.busAddress);
+				ALOGE("RTOS COMMON MEM RESIZE zero linear buffer allocated %d %x\n",tempSize,params.busAddress);
 				vcos_quickslow_mutex_unlock(&g_mgr.mutex);
 				return 0;
 			}

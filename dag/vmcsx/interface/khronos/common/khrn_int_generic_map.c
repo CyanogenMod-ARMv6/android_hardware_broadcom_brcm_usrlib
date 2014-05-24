@@ -118,7 +118,9 @@ bool khrn_generic_map(init)(KHRN_GENERIC_MAP(T) *map, uint32_t capacity)
    if (handle == MEM_INVALID_HANDLE) {
       return false;
    }
-   { vcos_static_assert(MEM_INVALID_HANDLE == KHRN_GENERIC_MAP_VALUE_NONE); }
+   //#pragma message STRINGIZE(MEM_INVALID_HANDLE)
+   //#pragma message STRINGIZE(KHRN_GENERIC_MAP_VALUE_NONE)
+   //{ vcos_static_assert(MEM_INVALID_HANDLE == KHRN_GENERIC_MAP_VALUE_NONE); }
    /* all values already initialised to KHRN_GENERIC_MAP_VALUE_NONE */
 #else
    base = (KHRN_GENERIC_MAP(ENTRY_T) *)KHRN_GENERIC_MAP_ALLOC(capacity * sizeof(KHRN_GENERIC_MAP(ENTRY_T)),
