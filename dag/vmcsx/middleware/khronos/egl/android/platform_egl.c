@@ -183,7 +183,7 @@ void egl_server_platform_display(
 		nativeWindow = get_android_native_window();
 
 	if (nativeWindow) {
-		nativeWindow->dequeueBuffer(nativeWindow, &buffer, -1);
+		native_window_dequeue_buffer_and_wait(nativeWindow, &buffer);
 		// comment out the line below when software OpenGL is used for SurfaceFlinger 
 		//nativeWindow->lockBuffer(nativeWindow, buffer);
 

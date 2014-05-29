@@ -845,7 +845,7 @@ static bool surface_dequeue_buffer(struct surface *surface)
          {
             ALOGV("surface_dequeue_buffer - 4" );
 
-             surface->window->dequeueBuffer(surface->window, &surface->buffer, -1);
+             native_window_dequeue_buffer_and_wait(surface->window, &surface->buffer);
 
              if( surface->buffer )
              {
