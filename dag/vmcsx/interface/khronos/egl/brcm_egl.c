@@ -11,8 +11,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #define LOG_TAG	"BRCM_EGL"
 #include <cutils/log.h>
 
-//#include <ui/egl/android_natives.h>
-//#include <ui/android_native_buffer.h>
+#include <system/window.h>
 #include <cutils/native_handle.h>
 #include <cutils/properties.h>
 

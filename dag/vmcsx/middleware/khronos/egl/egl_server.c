@@ -71,8 +71,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #endif
 
 #ifdef ANDROID
-//#include <ui/android_native_buffer.h>
-//#include <ui/egl/android_natives.h>
+#include <system/window.h>
 #include <hardware/gralloc.h>
 gralloc_module_t const* module = NULL;
 #endif

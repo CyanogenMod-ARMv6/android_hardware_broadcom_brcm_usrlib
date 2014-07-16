@@ -13,8 +13,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include "interface/khronos/include/EGL/eglext.h"
 #include "helpers/vc_image/vc_image.h"
 #include <assert.h>
-//#include <ui/android_native_buffer.h>
-//#include <ui/egl/android_natives.h>
+#include <system/window.h>
 #include <cutils/log.h>
 
 static bool displaying = false;
