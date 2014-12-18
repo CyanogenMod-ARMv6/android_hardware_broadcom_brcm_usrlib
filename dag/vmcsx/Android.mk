@@ -25,7 +25,7 @@ LOCAL_CFLAGS += -DBCM_COMP_ATHENA_AXI2AHB_BUG_WORKAROUND
 
 
 LOCAL_SHARED_LIBRARIES := libcutils libhardware libutils libui libv3d
-LOCAL_LDLIBS := -lpthread -ldl
+LOCAL_LDLIBS := -pthread -ldl
 
 LOCAL_ARM_MODE := arm
 
