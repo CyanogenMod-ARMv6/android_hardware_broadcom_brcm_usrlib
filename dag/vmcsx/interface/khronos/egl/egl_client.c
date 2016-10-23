@@ -362,7 +362,7 @@ name may be one of EGL CLIENT APIS, EGL EXTENSIONS, EGL VENDOR, or
 EGL VERSION.
 The EGL CLIENT APIS string describes which client rendering APIs are supported.
 It is zero-terminated and contains a space-separated list of API names,
-which must include at least one of ‘‘OpenGL ES’’ or ‘‘OpenVG’’.
+which must include at least one of \91\91OpenGL ES\92\92 or \91\91OpenVG\92\92.
 Version 1.3 - December 4, 2006
 3.4. CONFIGURATION MANAGEMENT 13
 The EGL EXTENSIONS string describes which EGL extensions are supported
@@ -512,7 +512,7 @@ EGLAPI const char EGLAPIENTRY * eglQueryString(EGLDisplay dpy, EGLint name)
    of the OpenVG 1.0 specification for more information.
 
    Similarly, the EGL_VG_ALPHA_FORMAT attribute does not necessarily control
-   or affect the window system’s interpretation of alpha values, even when the window
+   or affect the window system\92s interpretation of alpha values, even when the window
    system makes use of alpha to composite surfaces at display time. The window system's
    use and interpretation of alpha values is outside the scope of EGL. However,
    the preferred behavior is for window systems to ignore the value of EGL_VG_-
@@ -1574,12 +1574,12 @@ KHRONOS_CLIENT_LOG("eglCreateContext start\n");
                   if (version == 1)
 				  	{
                      type = OPENGL_ES_11;
-					 ALOGE("Creating OpenGL 1.1 Session");
+					 LOGE("Creating OpenGL 1.1 Session");
                   	}
                   else
 				  	{
 				  	type = OPENGL_ES_20;
-					ALOGE("Creating OpenGL 2.0 Session");
+					LOGE("Creating OpenGL 2.0 Session");
 					}
 
                context = egl_context_create(

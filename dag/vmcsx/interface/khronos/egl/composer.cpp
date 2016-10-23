@@ -67,7 +67,7 @@ struct composer* init_composer()
 	comp->composer = GhwComposer::create();
 	if(NULL == comp->composer)
 		{
-		ALOGE("composer create failed");
+		LOGE("composer create failed");
 		delete comp;
 		return NULL;
 		}
@@ -189,7 +189,7 @@ void process_img(struct composer* comp,android_native_buffer_t* buf)
 			intformat = GHW_PIXEL_FORMAT_RGB_565;
 			break;
 		default:
-			ALOGE("Unsupported format %d",handle->format);
+			LOGE("Unsupported format %d",handle->format);
 			format = GHW_PIXEL_FORMAT_RGB_565;
 			intformat = GHW_PIXEL_FORMAT_RGB_565;
 			break;

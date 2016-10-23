@@ -201,7 +201,7 @@ void EGLAPIENTRY egl_server_startup_hack()
 #ifdef ANDROID
    if (override_handles_size) {
       if (override_handles_size <= mempool_handles_size)
-         ALOGW("%s: No need to override handles size. mempool_handles_size = %d, override_handles_size = %d\n", __FUNCTION__, mempool_handles_size, override_handles_size);
+         LOGW("%s: No need to override handles size. mempool_handles_size = %d, override_handles_size = %d\n", __FUNCTION__, mempool_handles_size, override_handles_size);
       mempool_handles_size = override_handles_size;
    }
 #else
@@ -1321,7 +1321,7 @@ void eglIntDestroyByPid_impl(uint32_t pid_0, uint32_t pid_1)
    if(egl_server_state_initted)
    {
       EGL_SERVER_STATE_T *state = EGL_GET_SERVER_STATE();
-	  ALOGE("pid mem_get_free_space before =  %x",mem_get_free_space());
+	  LOGE("pid mem_get_free_space before =  %x",mem_get_free_space());
 
       uint64_t pid = pid_0 | ((uint64_t)pid_1 << 32);
       vcos_log("KHRN eglIntDestroyByPid_impl %d %d", pid_0, pid_1);
@@ -1334,7 +1334,7 @@ void eglIntDestroyByPid_impl(uint32_t pid_0, uint32_t pid_1)
 #if EGL_KHR_image
       khrn_map_iterate(&state->eglimages, destroy_eglimage_callback, &pid);
 #endif
-	  ALOGE("pid mem_get_free_space =  %x",mem_get_free_space());
+	  LOGE("pid mem_get_free_space =  %x",mem_get_free_space());
       /* todo: syncs */
    }
 }
@@ -2632,7 +2632,7 @@ void eglDirectRenderingPointer_impl(
    ihandle = surface->mh_color[surface->back_buffer_index];
    image = (KHRN_IMAGE_T *)mem_lock(ihandle);
 
-   ALOGV("eglDirectRenderingPointer_impl - mem = 0x%08X", buffer );
+   LOGV("eglDirectRenderingPointer_impl - mem = 0x%08X", buffer );
 
 #ifdef BRCM_V3D_OPT
 	whandle = mem_wrap( aux, buffer, buffer_height * buffer_stride, 1, 0, "EGL_IMAGE_WRAP_BRCM");

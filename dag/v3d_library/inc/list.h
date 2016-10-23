@@ -43,7 +43,7 @@ public:
     };
     ~Node() {
         if((mNext != NULL) || (mPrev != NULL)) {
-            ALOGE("Node has valid Next and Prev in destructor");
+            LOGE("Node has valid Next and Prev in destructor");
         }
         mPrev = mNext = 0;
         mObject = 0; mKey = 0;
@@ -80,10 +80,10 @@ public:
     List() :mHead(NULL),mTail(NULL),mCount(0) {};
     ~List() {
         if(mHead) {
-            ALOGE("List has valid Head in destructor");
+            LOGE("List has valid Head in destructor");
         }
         if(mTail) {
-            ALOGE("List has valid Tail in destructor");
+            LOGE("List has valid Tail in destructor");
         }
     };
     int getCount() { return mCount;};

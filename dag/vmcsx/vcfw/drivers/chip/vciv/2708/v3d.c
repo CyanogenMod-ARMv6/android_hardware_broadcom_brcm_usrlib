@@ -302,22 +302,22 @@ static void *cleanup_catch_routine(void *arg)
 	while(running_cleanup) {
 		uint64_t ge_drv_cleanup_data =0;
 		int retval = ioctl(fd,GE_IOC_WAIT,&ge_drv_cleanup_data);
-		ALOGE("v3d cleanup ioctl returned %x %x",(uint32_t)ge_drv_cleanup_data, (uint32_t)(ge_drv_cleanup_data>>32));
+		LOGE("v3d cleanup ioctl returned %x %x",(uint32_t)ge_drv_cleanup_data, (uint32_t)(ge_drv_cleanup_data>>32));
 		eglIntDestroyByPid_impl((uint32_t)ge_drv_cleanup_data, (uint32_t)(ge_drv_cleanup_data>>32));
 		}
-	ALOGE("cleanup returning");
+	LOGE("cleanup returning");
 	return arg;
 }
 static void *isr_catch_routine(void *arg)
 {
    while(running) {
       if(ioctl(fd, V3D_IOCTL_WAIT_IRQ, &irq_flags)) {
-         ALOGE("V3D_IOCTL_WAIT_IRQ error\n");
+         LOGE("V3D_IOCTL_WAIT_IRQ error\n");
          continue;
       }
 // DEBUG_V3D needs to be enabled in both kernel and userspace v3d.c file
 #ifdef DEBUG_V3D
-      ALOGE("V3D interrupt 0x%04x, flags = 0x%04x\n", (irq_flags >> 16), (irq_flags & 0xffff));
+      LOGE("V3D interrupt 0x%04x, flags = 0x%04x\n", (irq_flags >> 16), (irq_flags & 0xffff));
       irq_flags &= 0xffff;
 #endif
       if (irq_flags.v3d_irq_flags || irq_flags.qpu_irq_flags) {

@@ -71,7 +71,7 @@ EGLImageKHR eglCreateImageKHR_Int(EGLDisplay dpy, EGLContext ctx, EGLenum target
 #ifndef BRCM_V3D_OPT
 void eglIntDestroyByPid_impl(uint32_t pid_0, uint32_t pid_1)
 {
-	ALOGE("Do NOT Reach eglIntDestroyByPid_impl");
+	LOGE("Do NOT Reach eglIntDestroyByPid_impl");
 }
 #endif
 
@@ -80,14 +80,14 @@ EGLContext eglCreateContext(EGLDisplay display, EGLConfig config, EGLContext sha
     EGLContext context_int = eglCreateContext_Int(display, config, share_context, attrib_list);
     if(context_int == EGL_NO_CONTEXT)
     {
-        ALOGE("eglCreateContext - FAILED");
+        LOGE("eglCreateContext - FAILED");
         return EGL_NO_CONTEXT;
     }
     else
     {
         struct context *context = (struct context *)malloc(sizeof(struct context));
         int i;
-        ALOGV("eglCreateContext() context: %p, VC context %d, Thread %d", context, (int)context_int, gettid());
+        LOGV("eglCreateContext() context: %p, VC context %d, Thread %d", context, (int)context_int, gettid());
         context->context = context_int;
         context->read = 0;
         context->draw = 0;
@@ -110,7 +110,7 @@ EGLBoolean eglDestroyContext(EGLDisplay display, EGLContext context_)
     if(context_ == EGL_NO_CONTEXT)
     {
         return EGL_FALSE;
-        ALOGE("eglDestroyContext - FAILED");
+        LOGE("eglDestroyContext - FAILED");
     }
     else
     {
@@ -126,12 +126,12 @@ EGLBoolean eglDestroyContext(EGLDisplay display, EGLContext context_)
       {
          //the context is still current according to the spec - do nothing
          //TODO - deal with this case
-         ALOGD("eglDestroyContext() FATAL error - the context is still active but we called destroy - FIX THIS");
+         LOGD("eglDestroyContext() FATAL error - the context is still active but we called destroy - FIX THIS");
          return EGL_FALSE;
       }
 
        //Also, don't we need to check if the context is active or not?
-      ALOGV("eglDestroyContext() context: %p, VC context: %d, Thread %d", context, (int)context->context, gettid());
+      LOGV("eglDestroyContext() context: %p, VC context: %d, Thread %d", context, (int)context->context, gettid());
       EGLBoolean ret = eglDestroyContext_Int(display, context->context);
       release_composer(context->composer);
 	  context->composer = NULL;
@@ -147,12 +147,12 @@ EGLBoolean eglMakeCurrent(EGLDisplay display, EGLSurface draw, EGLSurface read, 
     struct surface *next_read_surface = (struct surface *)read;
     struct context *current = brcm_egl_get_current();
 
-   ALOGV("eglMakeCurrent - 1");
+   LOGV("eglMakeCurrent - 1");
 
     //Are we getting rid of the context?
     if(draw == EGL_NO_SURFACE && read == EGL_NO_SURFACE && context == EGL_NO_CONTEXT)
     {
-       ALOGV("eglMakeCurrent - 2");
+       LOGV("eglMakeCurrent - 2");
 
         //if there is a context current, get rid of it
         set_current(NULL);
@@ -161,7 +161,7 @@ EGLBoolean eglMakeCurrent(EGLDisplay display, EGLSurface draw, EGLSurface read, 
         eglMakeCurrent_Int(display, draw, read, context);
 
         current->made_current = 0;
-        ALOGV("eglMakeCurrent(NULL) Thread: %d", gettid());
+        LOGV("eglMakeCurrent(NULL) Thread: %d", gettid());
         return EGL_TRUE;
     }
     //is the context being setup? check all fields
@@ -177,16 +177,16 @@ EGLBoolean eglMakeCurrent(EGLDisplay display, EGLSurface draw, EGLSurface read, 
 
             if(thread->error == EGL_CONTEXT_LOST)
             {
-                ALOGE("eglMakeCurrent(%p, %p, %p) error: EGL_CONTEXT_LOST, Thread: %d", context, draw, read, gettid());
+                LOGE("eglMakeCurrent(%p, %p, %p) error: EGL_CONTEXT_LOST, Thread: %d", context, draw, read, gettid());
             }
             else
             {
-                ALOGE("eglMakeCurrent(%p, %p, %p) error: 0x%x, Thread: %d", context, draw, read, thread->error, gettid());
+                LOGE("eglMakeCurrent(%p, %p, %p) error: 0x%x, Thread: %d", context, draw, read, thread->error, gettid());
             }*/
         }
         else
         {
-            ALOGV("eglMakeCurrent(%p, %p, %p) Thread: %d", context, draw, read, gettid());
+            LOGV("eglMakeCurrent(%p, %p, %p) Thread: %d", context, draw, read, gettid());
         }
 
         //TODO - we ignore the context error code and go ahead with the following anyway
@@ -197,7 +197,7 @@ EGLBoolean eglMakeCurrent(EGLDisplay display, EGLSurface draw, EGLSurface read, 
         current->read = next_read_surface;
         current->draw = next_draw_surface;
 
-        ALOGV("eglMakeCurrent - 2");
+        LOGV("eglMakeCurrent - 2");
 
         //connect a current context
         attach_current_context(display, current);
@@ -265,13 +265,13 @@ EGLSurface eglCreateWindowSurface(  EGLDisplay display,
 
    int formatt;
    window->query(window, NATIVE_WINDOW_FORMAT, &formatt);
-   ALOGV("%s: format = %d",__FUNCTION__,formatt);
+   LOGV("%s: format = %d",__FUNCTION__,formatt);
    if(formatt == 0)
    {
 	   window->perform(window, NATIVE_WINDOW_SET_BUFFERS_FORMAT, HAL_PIXEL_FORMAT_YCbCr_422_I);
    }
 
-   ALOGV("eglCreateWindowSurface - 1");
+   LOGV("eglCreateWindowSurface - 1");
 
    if(IS_ANDROID_WINDOW(window))
    {
@@ -287,7 +287,7 @@ EGLSurface eglCreateWindowSurface(  EGLDisplay display,
 
 	  	surface_ptr->isTiled = 0;
 
-      ALOGV("eglCreateWindowSurface - 2");
+      LOGV("eglCreateWindowSurface - 2");
 
       window->query(window, NATIVE_WINDOW_WIDTH, &width);
       window->query(window, NATIVE_WINDOW_HEIGHT, &height);
@@ -305,16 +305,16 @@ EGLSurface eglCreateWindowSurface(  EGLDisplay display,
          //send back the surface
          surface = (EGLSurface)surface_ptr;
 
-         ALOGV("eglCreateWindowSurface() surface: %p, VC surface: %d, Thread: %d", surface, (int)surface_int, gettid());
+         LOGV("eglCreateWindowSurface() surface: %p, VC surface: %d, Thread: %d", surface, (int)surface_int, gettid());
       }
       else
       {
-         ALOGE("eglCreateWindowSurface - 3 - FAILED");
+         LOGE("eglCreateWindowSurface - 3 - FAILED");
          free(surface_ptr);
       }
    }
    else
-      ALOGV("eglCreateWindowSurface() surface: %p, Thread: %d", surface, gettid());
+      LOGV("eglCreateWindowSurface() surface: %p, Thread: %d", surface, gettid());
 
    return surface;
 }
@@ -360,7 +360,7 @@ EGLBoolean eglDestroySurface(EGLDisplay display, EGLSurface surface_)
 {
     if(surface_ == EGL_NO_SURFACE)
     {
-       ALOGE("eglDestroySurface - 1 - FAILED");
+       LOGE("eglDestroySurface - 1 - FAILED");
         return EGL_FALSE;
     }
     else
@@ -368,11 +368,11 @@ EGLBoolean eglDestroySurface(EGLDisplay display, EGLSurface surface_)
         struct surface *surface = (struct surface *)surface_;
         EGLBoolean res = EGL_FALSE;
 
-        ALOGV("eglDestroySurface - 2" );
+        LOGV("eglDestroySurface - 2" );
 
         if(surface->window)
         {
-            ALOGV("eglDestroySurface() surface: %p, android window %p, Thread: %d", surface, surface->window, gettid());
+            LOGV("eglDestroySurface() surface: %p, android window %p, Thread: %d", surface, surface->window, gettid());
             android_native_window_t *window = surface->window;
             android_native_buffer_t *buffer = surface->buffer;
 
@@ -380,7 +380,7 @@ EGLBoolean eglDestroySurface(EGLDisplay display, EGLSurface surface_)
 
             if(buffer)
             {
-               ALOGV("eglDestroySurface - 3" );
+               LOGV("eglDestroySurface - 3" );
 
                 struct context *current = brcm_egl_get_current();
                 if(current && current->draw == surface)
@@ -399,7 +399,7 @@ EGLBoolean eglDestroySurface(EGLDisplay display, EGLSurface surface_)
                res = eglDestroySurface_Int(display, surface->surface);
             }
 
-            ALOGV("eglDestroySurface - 4" );
+            LOGV("eglDestroySurface - 4" );
 
             //in concept, we no longer have a reference to the window surface
             surface->window = 0;
@@ -467,14 +467,14 @@ EGLBoolean eglSwapBuffers(EGLDisplay display, EGLSurface surface_)
 
     if( !current_context )
     {
-       ALOGE("eglSwapBuffers() - TODO - function called but no current context is valid");
+       LOGE("eglSwapBuffers() - TODO - function called but no current context is valid");
 	   return false;
     }
 
     //nothing bound?
     if(surface_ == EGL_NO_SURFACE)
     {
-        ALOGE("eglSwapBuffers(%p) error: EGL_BAD_SURFACE Thread: %d", current_context, gettid());
+        LOGE("eglSwapBuffers(%p) error: EGL_BAD_SURFACE Thread: %d", current_context, gettid());
         return EGL_FALSE;
     }
 
@@ -488,12 +488,12 @@ EGLBoolean eglSwapBuffers(EGLDisplay display, EGLSurface surface_)
         if(egl_is_context_lost(thread))
         {
             thread->error = EGL_CONTEXT_LOST;
-            ALOGE("eglSwapBuffers(%p) error: EGL_CONTEXT_LOST, Thread: %d", current_context, gettid());
+            LOGE("eglSwapBuffers(%p) error: EGL_CONTEXT_LOST, Thread: %d", current_context, gettid());
             return EGL_FALSE;
         }
 #endif
 
-        ALOGD_IF(current_context->profiling, "eglSwapBuffers(%d, %p) %d", (int)display, (void *)surface, gettid());
+        LOGD_IF(current_context->profiling, "eglSwapBuffers(%d, %p) %d", (int)display, (void *)surface, gettid());
 
         //todo - add in invalidates here
 #ifndef BRCM_V3D_OPT
@@ -509,7 +509,7 @@ EGLBoolean eglSwapBuffers(EGLDisplay display, EGLSurface surface_)
 		EGLint res = glGetError();
 		if (res == GL_OUT_OF_MEMORY)
 			{
-			ALOGE("eglSwapBuffers Error 0x%x",res);
+			LOGE("eglSwapBuffers Error 0x%x",res);
 			return false;
 			}
         //send the current buffer out
@@ -519,7 +519,7 @@ EGLBoolean eglSwapBuffers(EGLDisplay display, EGLSurface surface_)
 
         //grab a new buffer and bind it to V3D
         if( !surface_dequeue_buffer(surface) )
-           ALOGE("surface_dequeue_buffer FATAL error - no buffer to attach");
+           LOGE("surface_dequeue_buffer FATAL error - no buffer to attach");
 
          attach_buffer(display, surface);
 
@@ -527,7 +527,7 @@ EGLBoolean eglSwapBuffers(EGLDisplay display, EGLSurface surface_)
     }
     else
     {
-       ALOGE("eglSwapBuffers called but no window bound!" );
+       LOGE("eglSwapBuffers called but no window bound!" );
     }
     return EGL_FALSE;
 }
@@ -570,7 +570,7 @@ static KHRN_IMAGE_FORMAT_T convert_android_format(int format,bool isTiled)
 {
    KHRN_IMAGE_FORMAT_T result;
 
-   ALOGV("convert_android_format IN - format = %i", format );
+   LOGV("convert_android_format IN - format = %i", format );
 
    if(isTiled)
    	{
@@ -593,7 +593,7 @@ static KHRN_IMAGE_FORMAT_T convert_android_format(int format,bool isTiled)
 			result = RGB_565_TF;
 			break;
 		default:
-//			ALOGE("**************convert_android_format = %x",format);
+//			LOGE("**************convert_android_format = %x",format);
 			result = ABGR_8888_TF;
 			break;
 		}
@@ -624,7 +624,7 @@ static KHRN_IMAGE_FORMAT_T convert_android_format(int format,bool isTiled)
 	   }
    	}
 
-   ALOGV("convert_android_format OUT - result = %i", result );
+   LOGV("convert_android_format OUT - result = %i", result );
 
    return result;
 }
@@ -633,7 +633,7 @@ static int calculate_pitch( const KHRN_IMAGE_FORMAT_T format, const uint32_t wid
 {
    int pitch = 0;
 
-   ALOGV("calculate_pitch IN - format = %i, width = %i", format, width );
+   LOGV("calculate_pitch IN - format = %i, width = %i", format, width );
    switch (format)
    	{
    	case ABGR_8888_RSO:
@@ -652,7 +652,7 @@ static int calculate_pitch( const KHRN_IMAGE_FORMAT_T format, const uint32_t wid
 	default:
 		break;
 	}
-   ALOGV("calculate_pitch OUT pitch = %i", pitch );
+   LOGV("calculate_pitch OUT pitch = %i", pitch );
 
    return pitch;
 }
@@ -661,13 +661,13 @@ EGLBoolean eglDestroyImageKHR(EGLDisplay display, EGLImageKHR image)
 {
    EGLBoolean ret = EGL_FALSE;
 
-   ALOGV("eglDestroyImageKHR - 1" );
+   LOGV("eglDestroyImageKHR - 1" );
 
    if( EGL_NO_IMAGE_KHR != image )
    {
       EGL_IMAGE_T *img = (EGL_IMAGE_T *)image;
 
-      ALOGV("eglDestroyImageKHR - 2" );
+      LOGV("eglDestroyImageKHR - 2" );
 
       //force a flush
       glFinish();
@@ -675,7 +675,7 @@ EGLBoolean eglDestroyImageKHR(EGLDisplay display, EGLImageKHR image)
       //delete the KHR image
       ret = eglDestroyImageKHR_Int( display, img->v3d_egl_imagekhr );
 
-      ALOGE_IF( ret == EGL_FALSE, "eglSwapBuffers: eglDestroyImageKHR FAILED" );
+      LOGE_IF( ret == EGL_FALSE, "eglSwapBuffers: eglDestroyImageKHR FAILED" );
 
       //dec the ref
       // ((native_buffer *)img->abuffer->handle)->decRef();
@@ -693,14 +693,14 @@ void glEGLImageTargetTexture2DOES(GLenum target, GLeglImageOES image)
    {
       EGL_IMAGE_T *img = (EGL_IMAGE_T *)image;
 
-      ALOGV("glEGLImageTargetTexture2DOES = 0x%08X", (int)image );
+      LOGV("glEGLImageTargetTexture2DOES = 0x%08X", (int)image );
 	  struct context * ctx = brcm_egl_get_current();
 	  process_img(ctx->composer,img->abuffer);
 
       glEGLImageTargetTexture2DOES_Int( target, img->v3d_egl_imagekhr );
    }
    else
-      ALOGE("eglDestroyImageKHR - FATAL ERROR" );
+      LOGE("eglDestroyImageKHR - FATAL ERROR" );
    glGetError();
 }
 
@@ -709,13 +709,13 @@ EGLImageKHR eglCreateImageKHR(EGLDisplay display, EGLContext context, EGLenum ta
    KHRN_IMAGE_WRAP_T vc_buffer;
    EGLImageKHR ret = EGL_NO_IMAGE_KHR;
 
-   ALOGV("eglCreateImageKHR - 1" );
+   LOGV("eglCreateImageKHR - 1" );
 
    if(target == EGL_NATIVE_BUFFER_ANDROID)
    {
       android_native_buffer_t *abuffer = (android_native_buffer_t  *)buffer;
 
-      ALOGV("eglCreateImageKHR - 2" );
+      LOGV("eglCreateImageKHR - 2" );
 
       //get the details from the android_na
       if( abuffer )
@@ -741,14 +741,14 @@ EGLImageKHR eglCreateImageKHR(EGLDisplay display, EGLContext context, EGLenum ta
                   img->abuffer = abuffer;
                   img->v3d_egl_imagekhr = ret;
 
-                  ALOGV("eglCreateImageKHR - 4" );
+                  LOGV("eglCreateImageKHR - 4" );
 
                   //return our wrapper version instead
                   ret = (EGLImageKHR)img;
                }
                else
                {
-                  ALOGV("eglCreateImageKHR - 5" );
+                  LOGV("eglCreateImageKHR - 5" );
 
                   eglDestroyImageKHR( display, ret );
                   // ((native_buffer *)abuffer->handle)->decRef();
@@ -758,14 +758,14 @@ EGLImageKHR eglCreateImageKHR(EGLDisplay display, EGLContext context, EGLenum ta
             }
             else
             {
-               ALOGV("eglCreateImageKHR - 6" );
+               LOGV("eglCreateImageKHR - 6" );
                // ((native_buffer *)abuffer->handle)->decRef();
                abuffer->common.decRef(&abuffer->common);
             }
          }
          else
          {
-            ALOGE("eglCreateImageKHR - FAIL - brcm_egl_convert_anative_buf_to_khrn_image failed" );
+            LOGE("eglCreateImageKHR - FAIL - brcm_egl_convert_anative_buf_to_khrn_image failed" );
          }
       }
    }
@@ -831,25 +831,25 @@ static bool surface_dequeue_buffer(struct surface *surface)
 {
    bool ok = false;
 
-   ALOGV("surface_dequeue_buffer - 1" );
+   LOGV("surface_dequeue_buffer - 1" );
 
    if( surface )
    {
-      ALOGV("surface_dequeue_buffer - 2" );
+      LOGV("surface_dequeue_buffer - 2" );
 
       if(!surface->buffer)
       {
-         ALOGV("surface_dequeue_buffer - 3" );
+         LOGV("surface_dequeue_buffer - 3" );
 
          if(surface->window)
          {
-            ALOGV("surface_dequeue_buffer - 4" );
+            LOGV("surface_dequeue_buffer - 4" );
 
-             native_window_dequeue_buffer_and_wait(surface->window, &surface->buffer);
+             surface->window->dequeueBuffer(surface->window, &surface->buffer); 
 
              if( surface->buffer )
              {
-                  ALOGV("surface_dequeue_buffer - 5" );
+                  LOGV("surface_dequeue_buffer - 5" );
 
                  //surface->window->lockBuffer(surface->window, surface->buffer);
 
@@ -858,14 +858,14 @@ static bool surface_dequeue_buffer(struct surface *surface)
                  ok = true;
              }
              else
-                 ALOGE("surface_dequeue_buffer - FATAL ERROR - no buffer" );
+                 LOGE("surface_dequeue_buffer - FATAL ERROR - no buffer" );
          }
          else
-            ALOGE("surface_dequeue_buffer - FATAL ERROR - no window" );
+            LOGE("surface_dequeue_buffer - FATAL ERROR - no window" );
       }
    }
    else
-      ALOGE("surface_dequeue_buffer - FATAL ERROR - no surface" );
+      LOGE("surface_dequeue_buffer - FATAL ERROR - no surface" );
 
    return ok;
 }
@@ -875,7 +875,7 @@ static void surface_enqueue_buffer(struct surface *surface)
     //if we have a buffer bound, send it to the window manager (or what ever is listening)
     if(surface->buffer)
     {
-       ALOGV("surface_enqueue_buffer - 2" );
+       LOGV("surface_enqueue_buffer - 2" );
 	   if(surface->isTiled)
 	   	{
 //	   	surface->buffer->tiled = 1;
@@ -884,29 +884,29 @@ static void surface_enqueue_buffer(struct surface *surface)
 	   	{
 //		   surface->buffer->tiled = 0;
 	   	}
-        surface->window->queueBuffer(surface->window, surface->buffer, -1);
+        surface->window->queueBuffer(surface->window, surface->buffer);
         surface->buffer = 0;
     }
     else
-       ALOGE("surface_enqueue_buffer - FATAL ERROR - no buffer" );
+       LOGE("surface_enqueue_buffer - FATAL ERROR - no buffer" );
 }
 
 //Attach an android native buffer to the V3D backend (for the current context)
 static void attach_buffer(EGLDisplay display, struct surface *surface)
 {
-   ALOGV("attach_buffer - 1" );
+   LOGV("attach_buffer - 1" );
 
    if( surface && surface->buffer )
    {
       EGLBoolean ret = EGL_FALSE;
 
-      ALOGV("attach_buffer - 2" );
+      LOGV("attach_buffer - 2" );
 
       KHRN_IMAGE_WRAP_T vc_buffer;
 
       if( brcm_egl_convert_anative_buf_to_khrn_image( surface->buffer, &vc_buffer ,surface->isTiled) )
       {
-         ALOGV("attach_buffer - 3" );
+         LOGV("attach_buffer - 3" );
 		 if(surface->buffer->format == HAL_PIXEL_FORMAT_YCbCr_422_I) {
 		 	vc_buffer.storage = getStorage(surface->buffer);
 		 	vc_buffer.aux = getvStorage(surface->buffer);
@@ -916,12 +916,12 @@ static void attach_buffer(EGLDisplay display, struct surface *surface)
 
          if( !ret )
          {
-            ALOGE("attach_buffer - eglDirectRenderingPointer FAILED" );
+            LOGE("attach_buffer - eglDirectRenderingPointer FAILED" );
          }
       }
       else
       {
-         ALOGE("attach_buffer - brcm_egl_convert_anative_buf_to_khrn_image FAILED" );
+         LOGE("attach_buffer - brcm_egl_convert_anative_buf_to_khrn_image FAILED" );
       }
    }
 }
@@ -934,27 +934,27 @@ static void attach_surface(EGLDisplay display, struct context *current, struct s
        //An attached surface must have a buffer
        surface_dequeue_buffer(surface);
 
-       ALOGV("attach_surface - 1" );
+       LOGV("attach_surface - 1" );
 
        if(surface->buffer)
        {
-         ALOGV("attach_surface - 2" );
+         LOGV("attach_surface - 2" );
 
          attach_buffer( display, surface );
 
          //yay
-         ALOGV("attach_surface - 3 (yay)" );
+         LOGV("attach_surface - 3 (yay)" );
        }
        else
        {
-           ALOGV("attach_surface() Failed to dequeue buffer: surface = %p, Thread = %d",
+           LOGV("attach_surface() Failed to dequeue buffer: surface = %p, Thread = %d",
                surface,
                gettid());
        }
    }
    else
    {
-      ALOGV("attach_surface() - already got buffer, so we are happy: surface  = %p, Thread = %d",
+      LOGV("attach_surface() - already got buffer, so we are happy: surface  = %p, Thread = %d",
                surface,
                gettid());
    }
@@ -970,7 +970,7 @@ static void attach_current_context(EGLDisplay display, struct context *current)
     struct surface *draw_surface = current->draw;
     struct surface *read_surface = current->read;
 
-    ALOGV("attach_current_context - 1" );
+    LOGV("attach_current_context - 1" );
 
     //if the surface(s) have a valid window, grab a buffer and send it to v3d
     //this only does something the first time (if there is no buffer already grabbed
@@ -1037,7 +1037,7 @@ static bool brcm_egl_convert_anative_buf_to_khrn_image( android_native_buffer_t 
 
       if( format != IMAGE_FORMAT_INVALID )
       {
-         ALOGV("brcm_egl_convert_anative_buf_to_khrn_image - 3" );
+         LOGV("brcm_egl_convert_anative_buf_to_khrn_image - 3" );
 
          khrn_image_wrap( khr_image, format, width, height, stride, storage );
 #ifdef BRCM_V3D_OPT
@@ -1046,7 +1046,7 @@ static bool brcm_egl_convert_anative_buf_to_khrn_image( android_native_buffer_t 
          ret = true;
       }
       else
-         ALOGE("brcm_egl_convert_anative_buf_to_khrn_image - 3" );
+         LOGE("brcm_egl_convert_anative_buf_to_khrn_image - 3" );
    }
 
    return ret;

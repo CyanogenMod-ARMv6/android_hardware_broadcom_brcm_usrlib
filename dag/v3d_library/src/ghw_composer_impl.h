@@ -1190,7 +1190,7 @@ class Job {
 				}
 			};
 		void dump() {
-			ALOGD("Job = %x",this);
+			LOGD("Job = %x",this);
 			GhwMemHandleNode* node = mList.getHead();
 			while(node) {
 				node->get()->dump();

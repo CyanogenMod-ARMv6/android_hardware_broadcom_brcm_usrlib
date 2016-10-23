@@ -21,7 +21,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include "utils/Log.h"
 
 #define LOG_FUNC 
-//ALOGE("%s",__FUNCTION__);
+//LOGE("%s",__FUNCTION__);
 /*
    Called just before a rendering command (i.e. anything which could modify
    the draw surface) is executed
